@@ -112,8 +112,7 @@ else:
 
     # Display result of Query 3
     if st.session_state.query3_result is not None:
-        with col3:
-            st.dataframe(st.session_state.query3_result)
+        st.dataframe(st.session_state.query3_result)
 
     # Logout button
     if st.button('Logout'):
