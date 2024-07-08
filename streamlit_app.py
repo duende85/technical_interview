@@ -110,9 +110,9 @@ else:
             except Exception as e:
                 st.error(f'Error: {e}')
 
-    # Display result of Query 3
-    if st.session_state.query3_result is not None:
-        st.dataframe(st.session_state.query3_result)
+        # Display result of Query 3
+        if st.session_state.query3_result is not None:
+            st.dataframe(st.session_state.query3_result)
 
     # Logout button
     if st.button('Logout'):
