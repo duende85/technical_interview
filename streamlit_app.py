@@ -13,8 +13,6 @@ orders_csv_path = 'orders.csv'
 customers_df = pd.read_csv(customers_csv_path)
 orders_df = pd.read_csv(orders_csv_path)
 
-orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d%b%Y:%H:%M:%S.%f')
-
 # Initialize the in-memory SQLite database
 conn = sqlite3.connect(':memory:')
 customers_df.to_sql('customers', conn, if_exists='replace', index=False)
@@ -32,11 +30,7 @@ def save_to_csv_and_commit(df, csv_path):
 
 # Dictionary to store usernames and passwords
 users = {
-    "test1": "EVS2024sql",
-    "leo": "leoleo5",
-    "alan": "alaaan2024",
-    "admin": "kaczka",
-    "candidate": "SQLtest978"
+    "test": "testtest1294!"
     # Add more users as needed
 }
 
