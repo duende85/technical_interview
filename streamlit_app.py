@@ -13,7 +13,7 @@ orders_csv_path = 'orders.csv'
 customers_df = pd.read_csv(customers_csv_path)
 orders_df = pd.read_csv(orders_csv_path)
 
-orders_df['order_date'] = pd.to_datetime(df['order_date'], format='%d%b%Y:%H:%M:%S.%f')
+orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d%b%Y:%H:%M:%S.%f')
 
 # Initialize the in-memory SQLite database
 conn = sqlite3.connect(':memory:')
