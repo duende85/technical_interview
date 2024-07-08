@@ -61,33 +61,38 @@ else:
     st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers in the North America region. You need to identify the most recent order for each customer in North America and provide details about the customer and their order.')
     st.write('The data is stored in the tables named **customers** and **orders**.')
 
-    # Input and result for SQL query 1
-    st.subheader('Query 1')
-    query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
-    if st.button('Run Query 1'):
-        try:
-            query1_result = pd.read_sql_query(query1, conn)
-            st.session_state.query1_result = query1_result
-        except Exception as e:
-            st.error(f'Error: {e}')
+    # Create two columns layout for query inputs and results
+    col1, col2 = st.columns(2)
 
-    # Display result of Query 1
-    if st.session_state.query1_result is not None:
-        st.dataframe(st.session_state.query1_result)
+    # Input and result for SQL query 1
+    with col1:
+        st.subheader('Query 1')
+        query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
+        if st.button('Run Query 1'):
+            try:
+                query1_result = pd.read_sql_query(query1, conn)
+                st.session_state.query1_result = query1_result
+            except Exception as e:
+                st.error(f'Error: {e}')
+
+        # Display result of Query 1
+        if st.session_state.query1_result is not None:
+            st.dataframe(st.session_state.query1_result)
 
     # Input and result for SQL query 2
-    st.subheader('Query 2')
-    query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
-    if st.button('Run Query 2'):
-        try:
-            query2_result = pd.read_sql_query(query2, conn)
-            st.session_state.query2_result = query2_result
-        except Exception as e:
-            st.error(f'Error: {e}')
+    with col2:
+        st.subheader('Query 2')
+        query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
+        if st.button('Run Query 2'):
+            try:
+                query2_result = pd.read_sql_query(query2, conn)
+                st.session_state.query2_result = query2_result
+            except Exception as e:
+                st.error(f'Error: {e}')
 
-    # Display result of Query 2
-    if st.session_state.query2_result is not None:
-        st.dataframe(st.session_state.query2_result)
+        # Display result of Query 2
+        if st.session_state.query2_result is not None:
+            st.dataframe(st.session_state.query2_result)
 
     # Logout button
     if st.button('Logout'):
