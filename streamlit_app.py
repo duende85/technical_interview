@@ -69,7 +69,7 @@ else:
     # Input and result for SQL query 1 (smallest)
     with col1:
         st.subheader('Query 1')
-        query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers limit 10')
+        query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
         if st.button('Run Query 1'):
             try:
                 query1_result = pd.read_sql_query(query1, conn)
@@ -84,7 +84,7 @@ else:
     # Input and result for SQL query 2 (bigger)
     with col2:
         st.subheader('Query 2')
-        query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders limit 10')
+        query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
         if st.button('Run Query 2'):
             try:
                 query2_result = pd.read_sql_query(query2, conn)
@@ -99,7 +99,7 @@ else:
     # Input and result for SQL query 3 (biggest)
     with col3:
         st.subheader('Query 3')
-        query3 = st.text_area('Enter your SQL query here:',)
+        query3 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders WHERE order_status="Shipped"')
         if st.button('Run Query 3'):
             try:
                 query3_result = pd.read_sql_query(query3, conn)
@@ -107,8 +107,9 @@ else:
             except Exception as e:
                 st.error(f'Error: {e}')
 
-        # Display result of Query 3
-        if st.session_state.query3_result is not None:
+    # Display result of Query 3
+    if st.session_state.query3_result is not None:
+        with col3:
             st.dataframe(st.session_state.query3_result)
 
     # Logout button
