@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-import subprocess
 
 # Define CSV file paths
 customers_csv_path = 'customers.csv'
@@ -56,35 +55,30 @@ else:
     st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers in the North America region. You need to identify the most recent order for each customer in North America and provide details about the customer and their order.')
     st.write('The data is stored in the tables named **customers** and **orders**.')
 
-    # Create placeholders for query results
-    query1_result = None
-    query2_result = None
+    # Create placeholders for query results using st.cache
+    @st.cache(allow_output_mutation=True)
+    def get_query_result(query):
+        try:
+            result = pd.read_sql_query(query, conn)
+            return result
+        except Exception as e:
+            st.error(f'Error: {e}')
 
     # Input and result for SQL query 1
     st.subheader('Query 1')
     query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
     if st.button('Run Query 1'):
-        try:
-            query1_result = pd.read_sql_query(query1, conn)
-        except Exception as e:
-            st.error(f'Error: {e}')
-
-    # Display result of Query 1
-    if query1_result is not None:
-        st.dataframe(query1_result)
+        query1_result = get_query_result(query1)
+        if query1_result is not None:
+            st.dataframe(query1_result)
 
     # Input and result for SQL query 2
     st.subheader('Query 2')
     query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
     if st.button('Run Query 2'):
-        try:
-            query2_result = pd.read_sql_query(query2, conn)
-        except Exception as e:
-            st.error(f'Error: {e}')
-
-    # Display result of Query 2
-    if query2_result is not None:
-        st.dataframe(query2_result)
+        query2_result = get_query_result(query2)
+        if query2_result is not None:
+            st.dataframe(query2_result)
 
     # Logout button
     if st.button('Logout'):
