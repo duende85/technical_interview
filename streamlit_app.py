@@ -17,19 +17,9 @@ customers_df.to_sql('customers', conn, if_exists='replace', index=False)
 orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.%Y %H:%M:%S')
 orders_df.to_sql('orders', conn, if_exists='replace', index=False)
 
-# Function to save the DataFrame back to CSV and commit to GitHub
-def save_to_csv_and_commit(df, csv_path):
-    df.to_csv(csv_path, index=False)
-    try:
-        subprocess.run(['git', 'add', csv_path], check=True)
-        subprocess.run(['git', 'commit', '-m', f'Update {csv_path}'], check=True)
-        subprocess.run(['git', 'push'], check=True)
-    except subprocess.CalledProcessError as e:
-        st.error(f'Error during Git operations: {e}')
-
 # Dictionary to store usernames and passwords
 users = {
-    "test": "testtest1294!",
+    "test": "testtesttest",
     # Add more users as needed
 }
 
@@ -43,6 +33,12 @@ def authenticate(username, password):
         if password == stored_password:
             return True  # Authentication successful
     return False  # Authentication failed
+
+# Dictionary to store query results
+query_results = {
+    'query1': None,
+    'query2': None
+}
 
 # Streamlit UI
 st.title('SQL Test')
@@ -68,12 +64,6 @@ else:
     
     # Create two columns for query inputs and results
     col1, col2 = st.columns(2)
-    
-    # List to store query results
-    query_results = {
-        'query1': None,
-        'query2': None
-    }
     
     # Input and result for SQL query 1 (first column)
     with col1:
