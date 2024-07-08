@@ -19,7 +19,7 @@ orders_df.to_sql('orders', conn, if_exists='replace', index=False)
 
 # Dictionary to store usernames and passwords
 users = {
-    "test": "testtesttest",
+    "test": "testtest1294!",
     # Add more users as needed
 }
 
@@ -33,12 +33,6 @@ def authenticate(username, password):
         if password == stored_password:
             return True  # Authentication successful
     return False  # Authentication failed
-
-# Dictionary to store query results
-query_results = {
-    'query1': None,
-    'query2': None
-}
 
 # Streamlit UI
 st.title('SQL Test')
@@ -61,37 +55,36 @@ else:
     st.write(f'Welcome, {st.session_state.username}!')
     st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers in the North America region. You need to identify the most recent order for each customer in North America and provide details about the customer and their order.')
     st.write('The data is stored in the tables named **customers** and **orders**.')
-    
-    # Create two columns for query inputs and results
-    col1, col2 = st.columns(2)
-    
-    # Input and result for SQL query 1 (first column)
-    with col1:
-        st.subheader('Query 1')
-        query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
-        if st.button('Run Query 1'):
-            try:
-                query_results['query1'] = pd.read_sql_query(query1, conn)
-            except Exception as e:
-                st.error(f'Error: {e}')
-        
-        # Display result of Query 1
-        if query_results['query1'] is not None:
-            st.dataframe(query_results['query1'])
 
-    # Input and result for SQL query 2 (second column)
-    with col2:
-        st.subheader('Query 2')
-        query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
-        if st.button('Run Query 2'):
-            try:
-                query_results['query2'] = pd.read_sql_query(query2, conn)
-            except Exception as e:
-                st.error(f'Error: {e}')
-        
-        # Display result of Query 2
-        if query_results['query2'] is not None:
-            st.dataframe(query_results['query2'])
+    # Create placeholders for query results
+    query1_result = None
+    query2_result = None
+
+    # Input and result for SQL query 1
+    st.subheader('Query 1')
+    query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
+    if st.button('Run Query 1'):
+        try:
+            query1_result = pd.read_sql_query(query1, conn)
+        except Exception as e:
+            st.error(f'Error: {e}')
+
+    # Display result of Query 1
+    if query1_result is not None:
+        st.dataframe(query1_result)
+
+    # Input and result for SQL query 2
+    st.subheader('Query 2')
+    query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
+    if st.button('Run Query 2'):
+        try:
+            query2_result = pd.read_sql_query(query2, conn)
+        except Exception as e:
+            st.error(f'Error: {e}')
+
+    # Display result of Query 2
+    if query2_result is not None:
+        st.dataframe(query2_result)
 
     # Logout button
     if st.button('Logout'):
