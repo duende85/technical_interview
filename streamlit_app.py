@@ -41,6 +41,8 @@ if 'query1_result' not in st.session_state:
     st.session_state.query1_result = None
 if 'query2_result' not in st.session_state:
     st.session_state.query2_result = None
+if 'query3_result' not in st.session_state:
+    st.session_state.query3_result = None
 
 # Login form
 if 'logged_in' not in st.session_state:
@@ -61,8 +63,8 @@ else:
     st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers in the North America region. You need to identify the most recent order for each customer in North America and provide details about the customer and their order.')
     st.write('The data is stored in the tables named **customers** and **orders**.')
 
-    # Create two columns layout for query inputs and results
-    col1, col2 = st.columns(2)
+    # Create three columns layout for query inputs and results
+    col1, col2, col3 = st.columns(3)
 
     # Input and result for SQL query 1
     with col1:
@@ -93,6 +95,21 @@ else:
         # Display result of Query 2
         if st.session_state.query2_result is not None:
             st.dataframe(st.session_state.query2_result)
+
+    # Input and result for SQL query 3
+    with col3:
+        st.subheader('Query 3')
+        query3 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders WHERE order_status="Shipped"')
+        if st.button('Run Query 3'):
+            try:
+                query3_result = pd.read_sql_query(query3, conn)
+                st.session_state.query3_result = query3_result
+            except Exception as e:
+                st.error(f'Error: {e}')
+
+        # Display result of Query 3
+        if st.session_state.query3_result is not None:
+            st.dataframe(st.session_state.query3_result)
 
     # Logout button
     if st.button('Logout'):
