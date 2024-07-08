@@ -69,24 +69,25 @@ else:
     # Create two columns for query inputs and results
     col1, col2 = st.columns(2)
     
+    # List to store query results
+    query_results = {
+        'query1': None,
+        'query2': None
+    }
+    
     # Input and result for SQL query 1 (first column)
     with col1:
         st.subheader('Query 1')
         query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
         if st.button('Run Query 1'):
             try:
-                result1 = pd.read_sql_query(query1, conn)
-                st.dataframe(result1)  # Display result in a dataframe
-                
-                # Save changes to the database back to CSV if modifying queries are detected
-                if query1.strip().lower().startswith(('update', 'delete', 'insert')):
-                    customers_df_updated = pd.read_sql_query('SELECT * FROM customers', conn)
-                    orders_df_updated = pd.read_sql_query('SELECT * FROM orders', conn)
-                    if st.session_state.username == "admin":
-                        save_to_csv_and_commit(customers_df_updated, customers_csv_path)
-                        save_to_csv_and_commit(orders_df_updated, orders_csv_path)
+                query_results['query1'] = pd.read_sql_query(query1, conn)
             except Exception as e:
                 st.error(f'Error: {e}')
+        
+        # Display result of Query 1
+        if query_results['query1'] is not None:
+            st.dataframe(query_results['query1'])
 
     # Input and result for SQL query 2 (second column)
     with col2:
@@ -94,18 +95,13 @@ else:
         query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
         if st.button('Run Query 2'):
             try:
-                result2 = pd.read_sql_query(query2, conn)
-                st.dataframe(result2)  # Display result in a dataframe
-                
-                # Save changes to the database back to CSV if modifying queries are detected
-                if query2.strip().lower().startswith(('update', 'delete', 'insert')):
-                    customers_df_updated = pd.read_sql_query('SELECT * FROM customers', conn)
-                    orders_df_updated = pd.read_sql_query('SELECT * FROM orders', conn)
-                    if st.session_state.username == "admin":
-                        save_to_csv_and_commit(customers_df_updated, customers_csv_path)
-                        save_to_csv_and_commit(orders_df_updated, orders_csv_path)
+                query_results['query2'] = pd.read_sql_query(query2, conn)
             except Exception as e:
                 st.error(f'Error: {e}')
+        
+        # Display result of Query 2
+        if query_results['query2'] is not None:
+            st.dataframe(query_results['query2'])
 
     # Logout button
     if st.button('Logout'):
