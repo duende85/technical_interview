@@ -63,10 +63,10 @@ else:
     st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers in the North America region. You need to identify the most recent order for each customer in North America and provide details about the customer and their order.')
     st.write('The data is stored in the tables named **customers** and **orders**.')
 
-    # Create three columns layout for query inputs and results
-    col1, col2, col3 = st.columns(3)
+    # Create columns layout with custom widths
+    col1, col2, col3 = st.columns([1, 2, 3])
 
-    # Input and result for SQL query 1
+    # Input and result for SQL query 1 (smallest)
     with col1:
         st.subheader('Query 1')
         query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
@@ -81,7 +81,7 @@ else:
         if st.session_state.query1_result is not None:
             st.dataframe(st.session_state.query1_result)
 
-    # Input and result for SQL query 2
+    # Input and result for SQL query 2 (bigger)
     with col2:
         st.subheader('Query 2')
         query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
@@ -96,7 +96,7 @@ else:
         if st.session_state.query2_result is not None:
             st.dataframe(st.session_state.query2_result)
 
-    # Input and result for SQL query 3
+    # Input and result for SQL query 3 (biggest)
     with col3:
         st.subheader('Query 3')
         query3 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders WHERE order_status="Shipped"')
