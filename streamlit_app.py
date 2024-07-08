@@ -33,6 +33,9 @@ def authenticate(username, password):
             return True  # Authentication successful
     return False  # Authentication failed
 
+# Set wide layout for Streamlit app
+st.set_page_config(layout="wide")
+
 # Streamlit UI
 st.title('SQL Test')
 
@@ -64,7 +67,7 @@ else:
     st.write('The data is stored in the tables named **customers** and **orders**.')
 
     # Create columns layout with custom widths
-    col1, col2, col3 = st.columns([1.8, 2, 2.3])
+    col1, col2, col3 = st.columns([1, 2, 3])
 
     # Input and result for SQL query 1 (smallest)
     with col1:
@@ -99,24 +102,4 @@ else:
     # Input and result for SQL query 3 (biggest)
     with col3:
         st.subheader('Query 3')
-        query3 = st.text_area('Enter your SQL query here:', 'SELECT ...')
-        if st.button('Run Query 3'):
-            try:
-                query3_result = pd.read_sql_query(query3, conn)
-                st.session_state.query3_result = query3_result
-            except Exception as e:
-                st.error(f'Error: {e}')
-
-    # Display result of Query 3
-    if st.session_state.query3_result is not None:
-        with col3:
-            st.dataframe(st.session_state.query3_result)
-
-    # Logout button
-    if st.button('Logout'):
-        st.session_state.logged_in = False
-        st.session_state.username = None
-        st.success('Logged out successfully')
-
-# Close the connection when done
-conn.close()
+        query3 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders WHERE order_status="Shipp
