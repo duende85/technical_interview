@@ -29,7 +29,7 @@ def save_to_csv_and_commit(df, csv_path):
 
 # Dictionary to store usernames and passwords
 users = {
-    "test": "testtesttest",
+    "test": "testtest1294!",
     # Add more users as needed
 }
 
@@ -69,43 +69,43 @@ else:
     # Create two columns for query inputs and results
     col1, col2 = st.columns(2)
     
-    # Input for SQL query (first column)
-    query1 = col1.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
+    # Input for SQL query and Run Query button (first column)
+    with col1:
+        st.subheader('Query 1')
+        query1 = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
+        if st.button('Run Query 1'):
+            try:
+                result1 = pd.read_sql_query(query1, conn)
+                st.write(result1)
+                
+                # Save changes to the database back to CSV if modifying queries are detected
+                if query1.strip().lower().startswith(('update', 'delete', 'insert')):
+                    customers_df_updated = pd.read_sql_query('SELECT * FROM customers', conn)
+                    orders_df_updated = pd.read_sql_query('SELECT * FROM orders', conn)
+                    if st.session_state.username == "admin":
+                        save_to_csv_and_commit(customers_df_updated, customers_csv_path)
+                        save_to_csv_and_commit(orders_df_updated, orders_csv_path)
+            except Exception as e:
+                st.error(f'Error: {e}')
 
-    # Execute the query and display the result (first column)
-    if col1.button('Run Query'):
-        try:
-            result1 = pd.read_sql_query(query1, conn)
-            col1.write(result1)
-            
-            # Save changes to the database back to CSV if modifying queries are detected
-            if query1.strip().lower().startswith(('update', 'delete', 'insert')):
-                customers_df_updated = pd.read_sql_query('SELECT * FROM customers', conn)
-                orders_df_updated = pd.read_sql_query('SELECT * FROM orders', conn)
-                if st.session_state.username == "admin":
-                    save_to_csv_and_commit(customers_df_updated, customers_csv_path)
-                    save_to_csv_and_commit(orders_df_updated, orders_csv_path)
-        except Exception as e:
-            col1.error(f'Error: {e}')
-
-    # Input for SQL query (second column)
-    query2 = col2.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
-
-    # Execute the query and display the result (second column)
-    if col2.button('Run Query'):
-        try:
-            result2 = pd.read_sql_query(query2, conn)
-            col2.write(result2)
-            
-            # Save changes to the database back to CSV if modifying queries are detected
-            if query2.strip().lower().startswith(('update', 'delete', 'insert')):
-                customers_df_updated = pd.read_sql_query('SELECT * FROM customers', conn)
-                orders_df_updated = pd.read_sql_query('SELECT * FROM orders', conn)
-                if st.session_state.username == "admin":
-                    save_to_csv_and_commit(customers_df_updated, customers_csv_path)
-                    save_to_csv_and_commit(orders_df_updated, orders_csv_path)
-        except Exception as e:
-            col2.error(f'Error: {e}')
+    # Input for SQL query and Run Query button (second column)
+    with col2:
+        st.subheader('Query 2')
+        query2 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders')
+        if st.button('Run Query 2'):
+            try:
+                result2 = pd.read_sql_query(query2, conn)
+                st.write(result2)
+                
+                # Save changes to the database back to CSV if modifying queries are detected
+                if query2.strip().lower().startswith(('update', 'delete', 'insert')):
+                    customers_df_updated = pd.read_sql_query('SELECT * FROM customers', conn)
+                    orders_df_updated = pd.read_sql_query('SELECT * FROM orders', conn)
+                    if st.session_state.username == "admin":
+                        save_to_csv_and_commit(customers_df_updated, customers_csv_path)
+                        save_to_csv_and_commit(orders_df_updated, orders_csv_path)
+            except Exception as e:
+                st.error(f'Error: {e}')
 
     # Logout button
     if st.button('Logout'):
