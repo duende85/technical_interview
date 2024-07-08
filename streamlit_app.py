@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-from datetime import datetime
-import os
 import subprocess
 
 # Define CSV file paths
@@ -18,6 +16,7 @@ orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.
 # Initialize the in-memory SQLite database
 conn = sqlite3.connect(':memory:')
 customers_df.to_sql('customers', conn, if_exists='replace', index=False)
+orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.%Y %H:%M:%S')
 orders_df.to_sql('orders', conn, if_exists='replace', index=False)
 
 # Function to save the DataFrame back to CSV and commit to GitHub
@@ -32,7 +31,7 @@ def save_to_csv_and_commit(df, csv_path):
 
 # Dictionary to store usernames and passwords
 users = {
-    "test": "testtest1294!"
+    "test": "testtest1294!",
     # Add more users as needed
 }
 
@@ -68,6 +67,7 @@ else:
     st.write(f'Welcome, {st.session_state.username}!')
     st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers in the North America region. You need to identify the most recent order for each customer in North America and provide details about the customer and their order.')
     st.write('The data is stored in the tables named **customers** and **orders**.')
+    
     # Input for SQL query
     query = st.text_area('Enter your SQL query here:', 'SELECT * FROM customers')
 
@@ -76,22 +76,31 @@ else:
         try:
             result = pd.read_sql_query(query, conn)
             st.write(result)
-            st.write(query)
             
             # Save changes to the database back to CSV if modifying queries are detected
             if query.strip().lower().startswith(('update', 'delete', 'insert')):
                 customers_df_updated = pd.read_sql_query('SELECT * FROM customers', conn)
                 orders_df_updated = pd.read_sql_query('SELECT * FROM orders', conn)
-                if username == "admin":
+                if st.session_state.username == "admin":
                     save_to_csv_and_commit(customers_df_updated, customers_csv_path)
                     save_to_csv_and_commit(orders_df_updated, orders_csv_path)
+            
+            # Store the query in session state to display it
+            st.session_state.last_query = query
+            
         except Exception as e:
             st.error(f'Error: {e}')
+
+    # Display the last executed query
+    if 'last_query' in st.session_state:
+        st.write('Last Executed Query:')
+        st.code(st.session_state.last_query)
 
     # Logout button
     if st.button('Logout'):
         st.session_state.logged_in = False
         st.session_state.username = None
+        st.session_state.last_query = None
         st.success('Logged out successfully')
 
 # Close the connection when done
