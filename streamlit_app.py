@@ -102,4 +102,24 @@ else:
     # Input and result for SQL query 3 (biggest)
     with col3:
         st.subheader('Query 3')
-        query3 = st.text_area('Enter your SQL query here:', 'SELECT * FROM orders WHERE order_status="Shipp
+        query3 = st.text_area('Enter your SQL query here:', '')
+        if st.button('Run Query 3'):
+            try:
+                query3_result = pd.read_sql_query(query3, conn)
+                st.session_state.query3_result = query3_result
+            except Exception as e:
+                st.error(f'Error: {e}')
+
+    # Display result of Query 3
+    if st.session_state.query3_result is not None:
+        with col3:
+            st.dataframe(st.session_state.query3_result)
+
+    # Logout button
+    if st.button('Logout'):
+        st.session_state.logged_in = False
+        st.session_state.username = None
+        st.success('Logged out successfully')
+
+# Close the connection when done
+conn.close()
