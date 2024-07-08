@@ -18,7 +18,7 @@ orders_df.to_sql('orders', conn, if_exists='replace', index=False)
 
 # Dictionary to store usernames and passwords
 users = {
-    "test": "testtest1294!",
+    "test": "testtest",
     # Add more users as needed
 }
 
@@ -46,8 +46,6 @@ if 'query2_result' not in st.session_state:
     st.session_state.query2_result = None
 if 'query3_result' not in st.session_state:
     st.session_state.query3_result = None
-if 'query3' not in st.session_state:
-    st.session_state.query3 = 'SELECT * FROM orders WHERE order_status="Shipped"'
 
 # Login form
 if 'logged_in' not in st.session_state:
@@ -104,12 +102,11 @@ else:
     # Input and result for SQL query 3 (biggest)
     with col3:
         st.subheader('Query 3')
-        query3 = st.text_area('Enter your SQL query here:', st.session_state.query3)
+        query3 = st.text_area('Enter your SQL query here:', '')
         if st.button('Run Query 3'):
             try:
                 query3_result = pd.read_sql_query(query3, conn)
                 st.session_state.query3_result = query3_result
-                st.session_state.query3 = query3  # Update stored query
             except Exception as e:
                 st.error(f'Error: {e}')
 
