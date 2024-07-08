@@ -64,7 +64,7 @@ else:
     st.write('The data is stored in the tables named **customers** and **orders**.')
 
     # Create columns layout with custom widths
-    col1, col2, col3 = st.columns([1, 2, 3])
+    col1, col2, col3 = st.columns([1.5, 2, 2.5])
 
     # Input and result for SQL query 1 (smallest)
     with col1:
