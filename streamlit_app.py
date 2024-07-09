@@ -160,7 +160,7 @@ else:
             if answer == correct_answer:
                 st.session_state[f"evaluation_{i+1}"] = f"Correct.   Your answer: {answer}. The correct answer is {correct_answer}."
             else:
-                st.session_state[f"evaluation_{i+1}"] = f"Incorrect. Your answer: {answer}.The correct answer is {correct_answer}."
+                st.session_state[f"evaluation_{i+1}"] = f"Incorrect. Your answer: {answer}. The correct answer is {correct_answer}."
         
         for i, question in enumerate(questions):
             st.write(f"**Question {i+1}:** {question}")
