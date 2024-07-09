@@ -68,6 +68,8 @@ if 'query2_result' not in st.session_state:
     st.session_state.query2_result = None
 if 'query3_result' not in st.session_state:
     st.session_state.query3_result = None
+if 'score' not in st.session_state:
+    st.session_state.score = None
 
 # Login form
 if not st.session_state.logged_in:
@@ -81,6 +83,9 @@ if not st.session_state.logged_in:
             st.success('Logged in successfully')
         else:
             st.error('Invalid username or password')
+
+    if st.session_state.score is not None:
+        st.write(f"Your score: {st.session_state.score}/5")
 else:
     st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers and respond to several questions (find them at the end).')
     st.write('The data is stored in the tables named **customers** and **orders**. Total_amount refers to Revenue in USD. Below you can find in-built querying options (SQL-Lite).')
@@ -142,17 +147,22 @@ else:
             st.session_state.answers[i] = cols[1].text_input(f"Your answer for question {i+1}", key=f"input_{i+1}")
 
     if st.button("Submit All Answers"):
+        correct_count = 0
         for i, correct_answer in enumerate(correct_answers):
             answer = st.session_state.answers[i]
             st.session_state.question_results[i] = 1 if answer == correct_answer else 0
             if answer == correct_answer:
                 st.session_state[f"evaluation_{i+1}"] = f"Correct.   Your answer: {answer}. The correct answer is {correct_answer}."
+                correct_count += 1
             else:
                 st.session_state[f"evaluation_{i+1}"] = f"Incorrect. Your answer: {answer}. The correct answer is {correct_answer}."
         
         for i, question in enumerate(questions):
             st.write(f"**Question {i+1}:** {question}")
             st.write(st.session_state[f"evaluation_{i+1}"])
+        
+        st.session_state.score = correct_count
+        st.write(f"Your score: {correct_count}/5")
 
     # Logout button
     if st.button('Logout'):
