@@ -103,7 +103,7 @@ else:
     # Input and result for SQL query 3 (biggest)
     with col3:
         st.subheader('Query 3')
-        query3 = st.text_area('Enter your SQL query here:', 'Select min(order_date) from orders')
+        query3 = st.text_area('Enter your SQL query here:', 'SELECT min(order_date) FROM orders')
         if st.button('Run Query 3'):
             try:
                 query3_result = pd.read_sql_query(query3, conn)
