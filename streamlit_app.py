@@ -18,7 +18,7 @@ orders_df.to_sql('orders', conn, if_exists='replace', index=False)
 
 # Dictionary to store usernames and passwords
 users = {
-    "test": "testtest",
+    "test": "test2024!",
     # Add more users as needed
 }
 
