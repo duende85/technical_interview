@@ -50,7 +50,7 @@ if 'username' not in st.session_state:
 questions = [
     "What is the total number of customers?",
     "What is the total number of orders?",
-    "What is the average order amount?",
+    "What is the average order amount? (round to the nearest integer)",
     "Which customer has placed the highest number of orders?",
     "What is the most recent order date?"
 ]
@@ -146,7 +146,7 @@ else:
                     st.session_state[f"submitted_{i+1}"] = True
                     st.session_state[f"answer_{i+1}"] = answer
                     if answer == correct_answers[i]:
-                        st.session_state[f"evaluation_{i+1}"] = "Correct"
+                        st.session_state[f"evaluation_{i+1}"] = f"Correct. The correct answer is {correct_answers[i]}."
                     else:
                         st.session_state[f"evaluation_{i+1}"] = f"Incorrect. The correct answer is {correct_answers[i]}."
             else:
