@@ -68,7 +68,7 @@ if 'username' not in st.session_state:
 if 'login_time' not in st.session_state:
     st.session_state.login_time = None
 if 'self_assessment' not in st.session_state:
-    st.session_state.self_assessment = None
+    st.session_state.self_assessment = None  # Initialize as None
 
 # Login form
 if not st.session_state.logged_in:
