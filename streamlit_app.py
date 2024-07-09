@@ -41,11 +41,37 @@ if 'query2_result' not in st.session_state:
     st.session_state.query2_result = None
 if 'query3_result' not in st.session_state:
     st.session_state.query3_result = None
-
-# Login form
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
+if 'username' not in st.session_state:
+    st.session_state.username = None
 
+# Questions and correct answers
+questions = [
+    "What is the total number of customers?",
+    "What is the total number of orders?",
+    "What is the average order amount?",
+    "Which customer has placed the highest number of orders?",
+    "What is the most recent order date?"
+]
+correct_answers = [
+    str(customers_df.shape[0]),
+    str(orders_df.shape[0]),
+    str(orders_df['total_amount'].mean()),
+    customers_df.loc[orders_df['customer_id'].value_counts().idxmax(), 'customer_name'],
+    str(orders_df['order_date'].max())
+]
+
+# Initialize session state for questions
+for i in range(len(questions)):
+    if f"submitted_{i+1}" not in st.session_state:
+        st.session_state[f"submitted_{i+1}"] = False
+    if f"answer_{i+1}" not in st.session_state:
+        st.session_state[f"answer_{i+1}"] = ""
+    if f"evaluation_{i+1}" not in st.session_state:
+        st.session_state[f"evaluation_{i+1}"] = ""
+
+# Login form
 if not st.session_state.logged_in:
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
@@ -110,27 +136,12 @@ else:
 
     # Questions and answers section
     st.subheader('Questions')
-    questions = [
-        "What is the total number of customers?",
-        "What is the total number of orders?",
-        "What is the average order amount?",
-        "Which customer has placed the highest number of orders?",
-        "What is the most recent order date?"
-    ]
-    correct_answers = [
-        str(customers_df.shape[0]),
-        str(orders_df.shape[0]),
-        str(orders_df['total_amount'].mean()),
-        customers_df.loc[orders_df['customer_id'].value_counts().idxmax(), 'customer_name'],
-        str(orders_df['order_date'].max())
-    ]
-
     for i, question in enumerate(questions):
         with st.container():
-            cols = st.columns([1, 1, 5])
+            cols = st.columns([3, 2, 1])
             cols[0].write(f"**Question {i+1}:** {question}")
-            answer = cols[1].text_input(f"Your answer for question {i+1}", key=f"answer_{i+1}")
-            if f"submitted_{i+1}" not in st.session_state:
+            answer = cols[1].text_input(f"Your answer for question {i+1}", key=f"input_{i+1}", disabled=st.session_state[f"submitted_{i+1}"])
+            if not st.session_state[f"submitted_{i+1}"]:
                 if cols[2].button(f"Submit answer {i+1}", key=f"submit_{i+1}"):
                     st.session_state[f"submitted_{i+1}"] = True
                     st.session_state[f"answer_{i+1}"] = answer
