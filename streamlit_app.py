@@ -18,6 +18,9 @@ def load_data(url):
 customers_df = load_data(customers_csv_url)
 orders_df = load_data(orders_csv_url)
 
+# Convert order_date to datetime
+orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.%Y %H:%M:%S')
+
 # Connect to PostgreSQL database
 conn = psycopg2.connect(
     dbname='postgres',
@@ -32,11 +35,8 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS customers (
     customer_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    email VARCHAR(100),
-    phone VARCHAR(20),
-    country VARCHAR(50)
+    customer_name VARCHAR(100),
+    customer_region VARCHAR(50)
 );
 """)
 
@@ -55,12 +55,11 @@ CREATE TABLE IF NOT EXISTS orders (
 cursor.execute("DELETE FROM customers; DELETE FROM orders;")
 
 cursor.executemany("""
-INSERT INTO customers (first_name, last_name, email, phone, country)
-VALUES (%s, %s, %s, %s, %s)
+INSERT INTO customers (customer_id, customer_name, customer_region)
+VALUES (%s, %s, %s)
 ON CONFLICT DO NOTHING;
-""", customers_df[['first_name', 'last_name', 'email', 'phone', 'country']].values.tolist())
+""", customers_df[['customer_id', 'customer_name', 'customer_region']].values.tolist())
 
-orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.%Y %H:%M:%S')
 cursor.executemany("""
 INSERT INTO orders (customer_id, order_date, total_amount)
 VALUES (%s, %s, %s)
