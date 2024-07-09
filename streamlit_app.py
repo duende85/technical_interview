@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-from datetime import datetime
-import os
 
 # Define CSV file paths
 customers_csv_path = 'customers.csv'
@@ -64,10 +62,6 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'username' not in st.session_state:
     st.session_state.username = None
-if 'login_time' not in st.session_state:
-    st.session_state.login_time = None
-if 'self_assessment' not in st.session_state:
-    st.session_state.self_assessment = None  # Initialize as None
 if 'query1_result' not in st.session_state:
     st.session_state.query1_result = None
 if 'query2_result' not in st.session_state:
@@ -80,16 +74,10 @@ if not st.session_state.logged_in:
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
 
-    # Prompt for self-assessment rating using radio buttons
-    st.write('Rate your SQL knowledge from 0 to 10:')
-    self_assessment = st.radio('', options=list(range(11)), index=0)
-
-    if st.button('Login', disabled=self_assessment is None):
+    if st.button('Login'):
         if authenticate(username, password):
             st.session_state.logged_in = True
             st.session_state.username = username
-            st.session_state.login_time = datetime.now()
-            st.session_state.self_assessment = self_assessment  # Ensure self_assessment is an integer
             st.success('Logged in successfully')
         else:
             st.error('Invalid username or password')
@@ -168,16 +156,6 @@ else:
 
     # Logout button
     if st.button('Logout'):
-        logout_time = datetime.now()
-        log_entry = f"{st.session_state.username},{st.session_state.login_time},{logout_time},{st.session_state.self_assessment},"
-        log_entry += ','.join(map(str, st.session_state.question_results))
-        log_entry += f",{sum(filter(None, st.session_state.question_results))}"  # sum only non-None results
-
-        # Write log entry to file
-        log_file_path = 'logs.txt'
-        with open(log_file_path, 'a') as f:
-            f.write(log_entry + "\n")
-
         st.session_state.logged_in = False
         st.session_state.username = None
         st.success('Logged out successfully')
