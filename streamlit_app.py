@@ -46,8 +46,7 @@ correct_answers = [
 ]
 
 # Initialize session state for questions
-if 'question_results' not in st.session_state:
-    st.session_state.question_results = [None] * len(questions)  # Initialize with None
+st.session_state.question_results = [None] * len(questions)  # Initialize with None
 
 # Set wide layout for Streamlit app
 st.set_page_config(layout="wide")
