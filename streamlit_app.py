@@ -46,7 +46,8 @@ correct_answers = [
 ]
 
 # Initialize session state for questions
-st.session_state.question_results = [None] * len(questions)  # Initialize with None
+if 'question_results' not in st.session_state:
+    st.session_state.question_results = [None] * len(questions)  # Initialize with None
 
 # Set wide layout for Streamlit app
 st.set_page_config(layout="wide")
@@ -55,12 +56,6 @@ st.set_page_config(layout="wide")
 st.title('SQL Test')
 
 # Initialize session state
-if 'query1_result' not in st.session_state:
-    st.session_state.query1_result = None
-if 'query2_result' not in st.session_state:
-    st.session_state.query2_result = None
-if 'query3_result' not in st.session_state:
-    st.session_state.query3_result = None
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'username' not in st.session_state:
@@ -75,9 +70,8 @@ if not st.session_state.logged_in:
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
     
-    # Prompt for self-assessment rating using st.slider
+    # Prompt for self-assessment rating using radio buttons
     st.write('Rate your SQL knowledge from 0 to 10:')
-    #self_assessment = st.button('0') or st.button('1') or st.button('2)
     self_assessment = st.radio('', options=list(range(11)), index=0, key='self_assessment')
     
     if st.button('Login', disabled=self_assessment is None):
@@ -147,15 +141,16 @@ else:
         with st.container():
             cols = st.columns([1, 1, 5])
             cols[0].write(f"**Question {i+1}:** {question}")
-            answer = cols[1].text_input(f"Your answer for question {i+1}", key=f"input_{i+1}", disabled=st.session_state[f"submitted_{i+1}"])
-            if not st.session_state[f"submitted_{i+1}"]:
+            answer = cols[1].text_input(f"Your answer for question {i+1}", key=f"input_{i+1}", disabled=st.session_state.get(f"submitted_{i+1}", False))
+            if not st.session_state.get(f"submitted_{i+1}", False):
                 if cols[2].button(f"Submit answer {i+1}", key=f"submit_{i+1}"):
                     st.session_state[f"submitted_{i+1}"] = True
                     st.session_state.question_results[i] = 1 if answer == correct_answers[i] else 0
                     if answer == correct_answers[i]:
                         st.session_state[f"evaluation_{i+1}"] = f"Correct. The correct answer is {correct_answers[i]}."
                     else:
-                        st.session_state[f"evaluation_{i+1}"] = f"answer_{i+1} is incorrect. The correct answer is {correct_answers[i]}."
+                        st.session_state[f"evaluation_{i+1}"] = f"Incorrect. The correct answer is {correct_answers[i]}."
+
             else:
                 cols[2].write(st.session_state[f"evaluation_{i+1}"])
 
