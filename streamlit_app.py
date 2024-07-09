@@ -84,7 +84,7 @@ if not st.session_state.logged_in:
             st.error('Invalid username or password')
 else:
     st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers and respond to several questions (find them at the end).')
-    st.write('The data is stored in the tables named **customers** and **orders**. Below you can find in-built querying options (SQL-Lite).')
+    st.write('The data is stored in the tables named **customers** and **orders**. Total_amount refers to Revenue in USD. Below you can find in-built querying options (SQL-Lite).')
 
     # Create columns layout with custom widths
     col1, col2, col3 = st.columns([1.8, 2, 2.3])
