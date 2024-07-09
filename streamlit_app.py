@@ -24,8 +24,8 @@ orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.
 # Connect to PostgreSQL database
 try:
     conn = psycopg2.connect(
-        dbname='test-postgres',  # Replace with your actual dbname
-        user='igorwilk',    # Replace with your actual user
+        dbname='postgres',  # Replace with your actual dbname
+        user='postgres',    # Replace with your actual user
         password='mysecretpassword',  # Replace with your actual password
         host='localhost',   # Replace with your actual host (container name or IP)
         port='5432'         # Replace with your actual port (default PostgreSQL port)
