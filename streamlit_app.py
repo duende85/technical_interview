@@ -58,7 +58,7 @@ correct_answers = [
     str(customers_df.shape[0]),
     str(orders_df.shape[0]),
     str(int(orders_df['total_amount'].mean().round())),  # Average order amount as integer
-    customers_df.loc[orders_df.groupby('customer_id').size().idxmax(), 'customer_name'],
+    orders_df['customer_id'].value_counts().idxmax()
     str(orders_df['order_date'].max())
 ]
 
