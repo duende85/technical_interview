@@ -57,7 +57,7 @@ questions = [
 correct_answers = [
     str(customers_df.shape[0]),
     str(orders_df.shape[0]),
-    str(orders_df['total_amount'].mean()),
+    str(orders_df['total_amount'].mean().round()),
     customers_df.loc[orders_df['customer_id'].value_counts().idxmax(), 'customer_name'],
     str(orders_df['order_date'].max())
 ]
