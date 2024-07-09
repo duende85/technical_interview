@@ -62,11 +62,9 @@ if not st.session_state.logged_in:
         else:
             st.error('Invalid username or password')
 else:
-    st.write(f'Welcome, {st.session_state.username}!')
-    st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers in the North America region.')
-    st.write('You need to identify the most recent order for each customer in North America and provide details about the customer and their order.')
-    st.write('The data is stored in the tables named **customers** and **orders**.')
-
+    #st.write(f'Welcome, {st.session_state.username}!')
+    st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers in the North America region. The data is stored in the tables named **customers** and **orders**.')
+    st.write('Below you can find in-built querying options (SQL-Lite), use it to answer the questions below.')
     # Create columns layout with custom widths
     col1, col2, col3 = st.columns([1.8, 2, 2.3])
 
