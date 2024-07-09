@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 from datetime import datetime
+import os
 
 # Define CSV file paths
 customers_csv_path = 'customers.csv'
@@ -169,7 +170,8 @@ else:
         log_entry += f",{sum(filter(None, st.session_state.question_results))}"  # sum only non-None results
 
         # Write log entry to file
-        with open('logs.txt', 'a') as f:
+        log_file_path = os.path.join(os.path.dirname(__file__), 'logs.txt')
+        with open(log_file_path, 'a') as f:
             f.write(log_entry + "\n")
 
         st.session_state.logged_in = False
