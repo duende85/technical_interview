@@ -74,15 +74,18 @@ if 'self_assessment' not in st.session_state:
 if not st.session_state.logged_in:
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
-    if st.button('Login'):
+    
+    # Prompt for self-assessment rating using select_slider
+    st.write('Rate your SQL knowledge from 0 to 10:')
+    self_assessment = st.select_slider('', options=list(range(11)), key='self_assessment', value=None)
+    
+    if st.button('Login', disabled=self_assessment is None or self_assessment == ''):
         if authenticate(username, password):
             st.session_state.logged_in = True
             st.session_state.username = username
             st.session_state.login_time = datetime.now()
+            st.session_state.self_assessment = self_assessment
             st.success('Logged in successfully')
-
-            # Prompt for self-assessment
-            st.session_state.self_assessment = st.selectbox('Rate your SQL knowledge from 0 to 10:', list(range(11)), index=5)
         else:
             st.error('Invalid username or password')
 else:
