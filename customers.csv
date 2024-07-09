@@ -1,6 +1,6 @@
 customer_id,customer_name,customer_region
 1, Juan Rodriguez,Europe
-2, Mei Chen,Asia
+2, Mei Chen-Wong,Asia
 3, Ahmed Khan,South America
 4, Ana Souza,Europe
 5, Yuri Petrov,North America
@@ -8,32 +8,32 @@ customer_id,customer_name,customer_region
 7, Takashi Yamamoto,North America
 8, Maria Silva,North America
 9, Alexei Ivanov,Europe
-10, Fatima Ali,Europe
+10, Fati Alitre,Europe
 11, Lars Jensen,Asia
 12, Priya Patel,North America
 13, Antonio Rossi,Europe
 14, Ingrid Berg,Asia
-15, Alejandro Garcia,Asia
+15, Alejandro Garcia Lopez,Asia
 16, Leila Mansour,South America
-17, Viktor Novak,ANZ
+17, Mike Novak,ANZ
 18, Mei Ling,Europe
 19, Andrej Kuznetsov,Asia
 20, Anna Sokolova,South America
 21, José Fernandez,Europe
 22, Sanaa Abdel Nour,North America
-23, Giovanni Ferrari,North America
+23, Giovanni Ferra,South America
 24, Mia Johansson,North America
-25, Mohammad Abbas,North America
+25, Khalid Jefferson,North America
 26, Elena Kuznetsova,Europe
 27, Pedro Costa,Europe
 28, Isabella Rossi,Asia
-29, Yusuf Rahman,North America
+29, Yuseff Raman,North America
 30, Li Wei,Europe
-31, Diego Hernandez,Asia
-32, Sophie Lefevre,Asia
+31, Pedro Diego Hernandez,Asia
+32, Amanda Lefevre,Asia
 33, Ivan Volkov,South America
 34, Mei Wong,ANZ
-35, Ali Al-Mansour,Europe
+35, Ali Al-Mansour,Africa
 36, Ana Costa,North America
 37, Mikhail Ivanov,North America
 38, Chihiro Suzuki,North America
