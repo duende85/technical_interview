@@ -9,7 +9,7 @@ customers_csv_url = 'https://raw.githubusercontent.com/duende85/technical_interv
 orders_csv_url = 'https://raw.githubusercontent.com/duende85/technical_interview/main/orders.csv'
 
 # Load data from GitHub URLs
-@st.cache_data
+@st.cache
 def load_data(url):
     response = requests.get(url)
     response.raise_for_status()  # Ensure we notice bad responses
