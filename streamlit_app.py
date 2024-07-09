@@ -127,7 +127,7 @@ else:
 
     for i, question in enumerate(questions):
         with st.container():
-            cols = st.columns([3, 2, 1])
+            cols = st.columns([1, 1, 5])
             cols[0].write(f"**Question {i+1}:** {question}")
             answer = cols[1].text_input(f"Your answer for question {i+1}", key=f"answer_{i+1}")
             if f"submitted_{i+1}" not in st.session_state:
