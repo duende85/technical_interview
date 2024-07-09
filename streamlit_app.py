@@ -50,6 +50,8 @@ correct_answers = [
 # Initialize session state for questions
 if 'question_results' not in st.session_state:
     st.session_state.question_results = [None] * len(questions)  # Initialize with None
+if 'answers' not in st.session_state:
+    st.session_state.answers = [""] * len(questions)  # Initialize with empty strings
 
 # Set wide layout for Streamlit app
 st.set_page_config(layout="wide")
@@ -149,18 +151,20 @@ else:
         with st.container():
             cols = st.columns([1, 1, 5])
             cols[0].write(f"**Question {i+1}:** {question}")
-            answer = cols[1].text_input(f"Your answer for question {i+1}", key=f"input_{i+1}", disabled=st.session_state.get(f"submitted_{i+1}", False))
-            if not st.session_state.get(f"submitted_{i+1}", False):
-                if cols[2].button(f"Submit answer {i+1}", key=f"submit_{i+1}"):
-                    st.session_state[f"submitted_{i+1}"] = True
-                    st.session_state.question_results[i] = 1 if answer == correct_answers[i] else 0
-                    if answer == correct_answers[i]:
-                        st.session_state[f"evaluation_{i+1}"] = f"Correct. The correct answer is {correct_answers[i]}."
-                    else:
-                        st.session_state[f"evaluation_{i+1}"] = f"Incorrect. The correct answer is {correct_answers[i]}."
+            st.session_state.answers[i] = cols[1].text_input(f"Your answer for question {i+1}", key=f"input_{i+1}")
 
+    if st.button("Submit All Answers"):
+        for i, correct_answer in enumerate(correct_answers):
+            answer = st.session_state.answers[i]
+            st.session_state.question_results[i] = 1 if answer == correct_answer else 0
+            if answer == correct_answer:
+                st.session_state[f"evaluation_{i+1}"] = f"Correct. The correct answer is {correct_answer}."
             else:
-                cols[2].write(st.session_state[f"evaluation_{i+1}"])
+                st.session_state[f"evaluation_{i+1}"] = f"Incorrect. The correct answer is {correct_answer}."
+        
+        for i, question in enumerate(questions):
+            st.write(f"**Question {i+1}:** {question}")
+            st.write(st.session_state[f"evaluation_{i+1}"])
 
     # Logout button
     if st.button('Logout'):
@@ -170,7 +174,7 @@ else:
         log_entry += f",{sum(filter(None, st.session_state.question_results))}"  # sum only non-None results
 
         # Write log entry to file
-        log_file_path = os.path.join(os.path.dirname(__file__), 'logs.txt')
+        log_file_path = 'logs.txt'
         with open(log_file_path, 'a') as f:
             f.write(log_entry + "\n")
 
