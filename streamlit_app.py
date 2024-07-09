@@ -1,20 +1,73 @@
 import streamlit as st
 import pandas as pd
-import sqlite3
+import psycopg2
+import requests
+from io import StringIO
 
-# Define CSV file paths
-customers_csv_path = 'customers.csv'
-orders_csv_path = 'orders.csv'
+# Define URLs for CSV files
+customers_csv_url = 'https://raw.githubusercontent.com/duende85/technical_interview/main/customers.csv'
+orders_csv_url = 'https://raw.githubusercontent.com/duende85/technical_interview/main/orders.csv'
 
-# Load data from CSV files
-customers_df = pd.read_csv(customers_csv_path)
-orders_df = pd.read_csv(orders_csv_path)
+# Load data from GitHub URLs
+@st.cache_data
+def load_data(url):
+    response = requests.get(url)
+    response.raise_for_status()  # Ensure we notice bad responses
+    return pd.read_csv(StringIO(response.text))
 
-# Initialize the in-memory SQLite database
-conn = sqlite3.connect(':memory:')
-customers_df.to_sql('customers', conn, if_exists='replace', index=False)
+customers_df = load_data(customers_csv_url)
+orders_df = load_data(orders_csv_url)
+
+# Connect to PostgreSQL database
+conn = psycopg2.connect(
+    dbname='postgres',
+    user='postgres',
+    password='mysecretpassword',
+    host='localhost',
+    port='5432'
+)
+cursor = conn.cursor()
+
+# Create tables and load data
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS customers (
+    customer_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    country VARCHAR(50)
+);
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT,
+    order_date TIMESTAMP,
+    total_amount DECIMAL,
+    FOREIGN KEY (customer_id) REFERENCES customers (customer_id)
+);
+""")
+
+# Insert data into PostgreSQL tables
+# Clear existing data first for demonstration purposes
+cursor.execute("DELETE FROM customers; DELETE FROM orders;")
+
+cursor.executemany("""
+INSERT INTO customers (first_name, last_name, email, phone, country)
+VALUES (%s, %s, %s, %s, %s)
+ON CONFLICT DO NOTHING;
+""", customers_df[['first_name', 'last_name', 'email', 'phone', 'country']].values.tolist())
+
 orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.%Y %H:%M:%S')
-orders_df.to_sql('orders', conn, if_exists='replace', index=False)
+cursor.executemany("""
+INSERT INTO orders (customer_id, order_date, total_amount)
+VALUES (%s, %s, %s)
+ON CONFLICT DO NOTHING;
+""", orders_df[['customer_id', 'order_date', 'total_amount']].values.tolist())
+
+conn.commit()
 
 # Dictionary to store usernames and passwords
 users = {
@@ -24,14 +77,9 @@ users = {
 
 # User authentication
 def authenticate(username, password):
-    # Check if the username exists in the dictionary
-    if username in users:
-        # Retrieve the stored password for the username
-        stored_password = users[username]
-        # Check if the provided password matches the stored password
-        if password == stored_password:
-            return True  # Authentication successful
-    return False  # Authentication failed
+    if username in users and password == users[username]:
+        return True
+    return False
 
 # Set wide layout for Streamlit app
 st.set_page_config(layout="wide")
@@ -122,4 +170,5 @@ else:
         st.success('Logged out successfully')
 
 # Close the connection when done
+cursor.close()
 conn.close()
