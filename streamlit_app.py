@@ -50,7 +50,7 @@ if 'username' not in st.session_state:
 questions = [
     "What is the total number of customers?",
     "What is the total number of orders?",
-    "What is the average order amount? (round to the nearest integer)",
+    "What is the average order amount?",
     "Which customer has placed the highest number of orders?",
     "What is the most recent order date?"
 ]
