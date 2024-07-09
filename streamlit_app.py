@@ -37,6 +37,7 @@ questions = [
     "Which customer has placed the highest number of orders?",
     "What is the most recent order date?"
 ]
+
 correct_answers = [
     str(customers_df.shape[0]),
     str(orders_df.shape[0]),
@@ -46,7 +47,8 @@ correct_answers = [
 ]
 
 # Initialize session state for questions
-st.session_state.question_results = [None] * len(questions)  # Initialize with None
+if 'question_results' not in st.session_state:
+    st.session_state.question_results = [None] * len(questions)  # Initialize with None
 
 # Set wide layout for Streamlit app
 st.set_page_config(layout="wide")
@@ -68,17 +70,17 @@ if 'self_assessment' not in st.session_state:
 if not st.session_state.logged_in:
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
-    
+
     # Prompt for self-assessment rating using radio buttons
     st.write('Rate your SQL knowledge from 0 to 10:')
-    self_assessment = st.radio('', options=list(range(11)), index=0, key='self_assessment')
-    
+    self_assessment = st.radio('', options=list(range(11)), index=0)
+
     if st.button('Login', disabled=self_assessment is None):
         if authenticate(username, password):
             st.session_state.logged_in = True
             st.session_state.username = username
             st.session_state.login_time = datetime.now()
-            st.session_state.self_assessment = int(self_assessment)  # Ensure self_assessment is an integer
+            st.session_state.self_assessment = self_assessment  # Ensure self_assessment is an integer
             st.success('Logged in successfully')
         else:
             st.error('Invalid username or password')
@@ -155,19 +157,18 @@ else:
 
     # Logout button
     if st.button('Logout'):
-        st.session_state.logged_in = False
         logout_time = datetime.now()
-        st.session_state.username = None
-        st.success('Logged out successfully')
-
-        # Logging user actions
         log_entry = f"{st.session_state.username},{st.session_state.login_time},{logout_time},{st.session_state.self_assessment},"
         log_entry += ','.join(map(str, st.session_state.question_results))
-        log_entry += f",{sum(st.session_state.question_results)}"
-        
+        log_entry += f",{sum(filter(None, st.session_state.question_results))}"  # sum only non-None results
+
         # Write log entry to file
         with open('logs.txt', 'a') as f:
             f.write(log_entry + "\n")
+
+        st.session_state.logged_in = False
+        st.session_state.username = None
+        st.success('Logged out successfully')
 
 # Close the connection when done
 conn.close()
