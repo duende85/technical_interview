@@ -138,7 +138,7 @@ else:
     st.subheader('Questions')
     for i, question in enumerate(questions):
         with st.container():
-            cols = st.columns([3, 2, 1])
+            cols = st.columns([1, 1, 5])
             cols[0].write(f"**Question {i+1}:** {question}")
             answer = cols[1].text_input(f"Your answer for question {i+1}", key=f"input_{i+1}", disabled=st.session_state[f"submitted_{i+1}"])
             if not st.session_state[f"submitted_{i+1}"]:
@@ -148,7 +148,7 @@ else:
                     if answer == correct_answers[i]:
                         st.session_state[f"evaluation_{i+1}"] = f"Correct. The correct answer is {correct_answers[i]}."
                     else:
-                        st.session_state[f"evaluation_{i+1}"] = f"Incorrect. The correct answer is {correct_answers[i]}."
+                        st.session_state[f"evaluation_{i+1}"] = f"answer_{i+1} is incorrect. The correct answer is {correct_answers[i]}."
             else:
                 cols[2].write(st.session_state[f"evaluation_{i+1}"])
 
