@@ -84,7 +84,7 @@ if not st.session_state.logged_in:
             st.session_state.logged_in = True
             st.session_state.username = username
             st.session_state.login_time = datetime.now()
-            st.session_state.self_assessment = self_assessment
+            st.session_state.self_assessment = int(self_assessment)  # Ensure self_assessment is an integer
             st.success('Logged in successfully')
         else:
             st.error('Invalid username or password')
