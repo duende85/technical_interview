@@ -9,25 +9,18 @@ customers_csv_url = 'https://raw.githubusercontent.com/duende85/technical_interv
 orders_csv_url = 'https://raw.githubusercontent.com/duende85/technical_interview/main/orders.csv'
 
 # Load data from GitHub URLs
-@st.cache(allow_output_mutation=True)
 def load_data(url):
     response = requests.get(url)
     response.raise_for_status()  # Ensure we notice bad responses
     return pd.read_csv(StringIO(response.text))
 
-customers_df = load_data(customers_csv_url)
-orders_df = load_data(orders_csv_url)
-
-# Convert order_date to datetime
-orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.%Y %H:%M:%S')
-
 # Connect to PostgreSQL database
 conn = psycopg2.connect(
     dbname='postgres',
     user='postgres',
-    password='mysecretpassword',
-    host='localhost',
-    port='5432'
+    password='mysecretpassword',  # Replace with your actual password
+    host='localhost',              # Replace with your actual host
+    port='5432'                    # Replace with your actual port
 )
 cursor = conn.cursor()
 
@@ -50,21 +43,30 @@ CREATE TABLE IF NOT EXISTS orders (
 );
 """)
 
+# Load data into PostgreSQL tables
+customers_df = load_data(customers_csv_url)
+orders_df = load_data(orders_csv_url)
+
+# Convert order_date to datetime
+orders_df['order_date'] = pd.to_datetime(orders_df['order_date'], format='%d.%m.%Y %H:%M:%S')
+
 # Insert data into PostgreSQL tables
 # Clear existing data first for demonstration purposes
 cursor.execute("DELETE FROM customers; DELETE FROM orders;")
 
-cursor.executemany("""
-INSERT INTO customers (customer_id, customer_name, customer_region)
-VALUES (%s, %s, %s)
-ON CONFLICT DO NOTHING;
-""", customers_df[['customer_id', 'customer_name', 'customer_region']].values.tolist())
+for index, row in customers_df.iterrows():
+    cursor.execute("""
+    INSERT INTO customers (customer_id, customer_name, customer_region)
+    VALUES (%s, %s, %s)
+    ON CONFLICT DO NOTHING;
+    """, (row['customer_id'], row['customer_name'], row['customer_region']))
 
-cursor.executemany("""
-INSERT INTO orders (customer_id, order_date, total_amount)
-VALUES (%s, %s, %s)
-ON CONFLICT DO NOTHING;
-""", orders_df[['customer_id', 'order_date', 'total_amount']].values.tolist())
+for index, row in orders_df.iterrows():
+    cursor.execute("""
+    INSERT INTO orders (customer_id, order_date, total_amount)
+    VALUES (%s, %s, %s)
+    ON CONFLICT DO NOTHING;
+    """, (row['customer_id'], row['order_date'], row['total_amount']))
 
 conn.commit()
 
@@ -168,6 +170,6 @@ else:
         st.session_state.username = None
         st.success('Logged out successfully')
 
-# Close the connection when done
+# Close cursor and connection when done
 cursor.close()
 conn.close()
