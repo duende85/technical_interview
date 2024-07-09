@@ -77,7 +77,8 @@ if not st.session_state.logged_in:
     
     # Prompt for self-assessment rating using st.slider
     st.write('Rate your SQL knowledge from 0 to 10:')
-    self_assessment = st.slider('', 0, 10, key='self_assessment', value=None)
+    #self_assessment = st.button('0') or st.button('1') or st.button('2)
+    self_assessment = st.radio('', options=list(range(11)), index=0, key='self_assessment')
     
     if st.button('Login', disabled=self_assessment is None):
         if authenticate(username, password):
