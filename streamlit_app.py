@@ -24,14 +24,9 @@ users = {
 
 # User authentication
 def authenticate(username, password):
-    # Check if the username exists in the dictionary
-    if username in users:
-        # Retrieve the stored password for the username
-        stored_password = users[username]
-        # Check if the provided password matches the stored password
-        if password == stored_password:
-            return True  # Authentication successful
-    return False  # Authentication failed
+    if username in users and password == users[username]:
+        return True
+    return False
 
 # Set wide layout for Streamlit app
 st.set_page_config(layout="wide")
@@ -62,9 +57,9 @@ if not st.session_state.logged_in:
         else:
             st.error('Invalid username or password')
 else:
-    #st.write(f'Welcome, {st.session_state.username}!')
-    st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers and respond several questions (find them at the end).\n\n'
-             'The data is stored in the tables named **customers** and **orders**. Below you can find in-built querying options (SQL-Lite).', unsafe_allow_html=True)
+    st.write('You are a data analyst at an e-commerce company. Your manager has asked you to analyze the orders placed by customers and respond to several questions (find them at the end).')
+    st.write('The data is stored in the tables named **customers** and **orders**. Below you can find in-built querying options (SQL-Lite).')
+
     # Create columns layout with custom widths
     col1, col2, col3 = st.columns([1.8, 2, 2.3])
 
@@ -112,6 +107,32 @@ else:
         # Display result of Query 3
         if st.session_state.query3_result is not None:
             st.dataframe(st.session_state.query3_result)
+
+    # Questions and answers section
+    st.subheader('Questions')
+    questions = [
+        "What is the total number of customers?",
+        "What is the total number of orders?",
+        "What is the average order amount?",
+        "Which customer has placed the highest number of orders?",
+        "What is the most recent order date?"
+    ]
+    correct_answers = [
+        str(customers_df.shape[0]),
+        str(orders_df.shape[0]),
+        str(orders_df['total_amount'].mean()),
+        customers_df.loc[orders_df['customer_id'].value_counts().idxmax(), 'customer_name'],
+        str(orders_df['order_date'].max())
+    ]
+
+    for i, question in enumerate(questions):
+        st.write(f"**Question {i+1}:** {question}")
+        answer = st.text_input(f"Your answer for question {i+1}", key=f"answer_{i+1}")
+        if st.button(f"Submit answer {i+1}", key=f"submit_{i+1}"):
+            if answer == correct_answers[i]:
+                st.success("Correct!")
+            else:
+                st.error(f"Incorrect. The correct answer is {correct_answers[i]}.")
 
     # Logout button
     if st.button('Logout'):
