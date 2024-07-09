@@ -50,14 +50,14 @@ if 'username' not in st.session_state:
 questions = [
     "What is the total number of customers?",
     "What is the total number of orders?",
-    "What is the average order amount?",
+    "What is the average order amount? Round to nearest integer.",
     "Which customer has placed the highest number of orders?",
     "What is the most recent order date?"
 ]
 correct_answers = [
     str(customers_df.shape[0]),
     str(orders_df.shape[0]),
-    str(orders_df['total_amount'].mean().round()),
+    str(int(orders_df['total_amount'].mean().round())),  # Average order amount as integer
     customers_df.loc[orders_df['customer_id'].value_counts().idxmax(), 'customer_name'],
     str(orders_df['order_date'].max())
 ]
