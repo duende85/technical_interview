@@ -65,6 +65,12 @@ if 'login_time' not in st.session_state:
     st.session_state.login_time = None
 if 'self_assessment' not in st.session_state:
     st.session_state.self_assessment = None  # Initialize as None
+if 'query1_result' not in st.session_state:
+    st.session_state.query1_result = None
+if 'query2_result' not in st.session_state:
+    st.session_state.query2_result = None
+if 'query3_result' not in st.session_state:
+    st.session_state.query3_result = None
 
 # Login form
 if not st.session_state.logged_in:
